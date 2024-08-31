@@ -10,6 +10,13 @@
               android:id="@+id/widget_container">
 
     <TextView
+            android:id="@+id/widget_expedition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="Title" />
+    <TextView
             android:id="@+id/widget_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

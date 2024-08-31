@@ -7,6 +7,8 @@ import 'package:notifyme/app/modules/home/providers/resi_provider.dart';
 import 'package:notifyme/app/modules/home/resi_model.dart';
 import '../controllers/home_controller.dart';
 
+const List<String> list = <String>['Select Expedition','spx', 'jnt-cargo'];
+
 /// Called when Doing Background Work initiated from Widget
 @pragma("vm:entry-point")
 void backgroundCallback(Uri? data) async {
@@ -18,19 +20,24 @@ void backgroundCallback(Uri? data) async {
   String resi = '';
   await HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
       .then((value) => {
-        resi = value!,
-  });
+            resi = value!,
+          });
+  String expedition = '';
+  await HomeWidget.getWidgetData<String>('expedition', defaultValue: 'Default Title')
+      .then((value) => {
+            expedition = value!,
+          });
   String message = '[$time] ';
-  final resiProvider = Get.put(ResiProvider());
-  final Resi? res = await resiProvider.getResi(resi);
-  if (res != null && res.data != null && res.data!.trackingList != null) {
-    List<TrackingList>? trackingList = res.data!.trackingList;
-    message += trackingList!.first.message!;
-  }
-  await HomeWidget.saveWidgetData<String>('message', message);
-  await HomeWidget.updateWidget(
-      name: 'HomeWidgetExampleProvider', iOSName: 'HomeWidgetExample');
-  Get.delete<ResiProvider>();
+  // final resiProvider = Get.put(ResiProvider());
+  // final Resi? res = await resiProvider.getResi(resi, expedition);
+  // if (res != null && res.data != null && res.data!.trackingList != null) {
+  //   List<TrackingList>? trackingList = res.data!.trackingList;
+  //   message += trackingList!.first.message!;
+  // }
+  // await HomeWidget.saveWidgetData<String>('message', message);
+  // await HomeWidget.updateWidget(
+  //     name: 'HomeWidgetExampleProvider', iOSName: 'HomeWidgetExample');
+  // Get.delete<ResiProvider>();
 }
 
 class HomeView extends GetView<HomeController> {
@@ -42,13 +49,14 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomeWidget Example'),
+        title: const Text('Notifyme'),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
         child: Center(
           child: Column(
             children: [
+              const ExpeditionsDropdown(),
               TextField(
                 decoration: const InputDecoration(
                   hintText: 'Resi',
@@ -88,6 +96,33 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ExpeditionsDropdown extends StatefulWidget {
+  const ExpeditionsDropdown({super.key});
+
+  @override
+  State<ExpeditionsDropdown> createState() => _ExpeditionsDropdownState();
+}
+
+class _ExpeditionsDropdownState extends State<ExpeditionsDropdown> {
+  String dropdownValue = list.first;
+  final homeController = Get.find<HomeController>();
+  @override
+  Widget build(BuildContext context) {
+    return DropdownMenu<String>(
+      initialSelection: list.first,
+      onSelected: (String? value) {
+        setState(() {
+          dropdownValue = value!;
+          homeController.expeditionController.text = value;
+        });
+      },
+      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(value: value, label: value);
+      }).toList(),
     );
   }
 }

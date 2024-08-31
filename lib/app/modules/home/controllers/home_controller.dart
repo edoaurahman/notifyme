@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:notifyme/app/modules/home/jnt_cargo.dart';
 import 'package:notifyme/app/modules/home/providers/resi_provider.dart';
 import 'package:workmanager/workmanager.dart';
 import '../resi_model.dart';
@@ -19,18 +20,33 @@ void callbackDispatcher() {
 
     final resiProvider = Get.put(ResiProvider());
     String resi = '';
-    await HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
+    await HomeWidget.getWidgetData<String>('title',
+            defaultValue: 'Default Title')
         .then((value) => {
-      resi = value!,
-    });
+              resi = value!,
+            });
+    String expedition = '';
+    await HomeWidget.getWidgetData<String>('expedition',
+            defaultValue: 'Expediton')
+        .then((value) => {
+              expedition = value!,
+            });
     String message = '[$time] ';
-    final Resi? res = await resiProvider.getResi(resi);
-    if (res != null && res.data != null && res.data!.trackingList != null) {
-      List<TrackingList>? trackingList = res.data!.trackingList;
-      message += trackingList!.first.message!;
+    final Response? res = await resiProvider.getResi(resi, expedition);
+    if (expedition == 'spx') {
+      final trackingList = Resi.fromJson(res!.body).data?.trackingList;
+      if (trackingList != null) {
+        message += trackingList.first.message!;
+      }
+    } else if (expedition == 'jnt-cargo') {
+      final trackingList = JntCargo.fromJson(res!.body).data?[0].details;
+      if (trackingList != null) {
+        message += trackingList.first.customerTracking!;
+      }
     }
-    //
+
     await HomeWidget.saveWidgetData<String>('message', message);
+    await HomeWidget.saveWidgetData<String>("expedition", expedition);
     await HomeWidget.updateWidget(
         name: 'HomeWidgetExampleProvider', iOSName: 'HomeWidgetExample');
     Get.delete<ResiProvider>();
@@ -40,9 +56,9 @@ void callbackDispatcher() {
 
 class HomeController extends GetxController {
   final TextEditingController resiController = TextEditingController();
+  final TextEditingController expeditionController = TextEditingController();
   final TextEditingController bodyController = TextEditingController();
   final resiProvider = Get.find<ResiProvider>();
-
   final message = ''.obs;
 
   @override
@@ -51,15 +67,21 @@ class HomeController extends GetxController {
     Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
     // For IOS
     HomeWidget.setAppGroupId('1');
-    HomeWidget.registerBackgroundCallback(backgroundCallback);
-    await HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
+    HomeWidget.registerInteractivityCallback(backgroundCallback);
+    await HomeWidget.getWidgetData<String>('expedition',
+            defaultValue: 'spx')
         .then((value) => {
-      resiController.text = value!,
-    });
-    await HomeWidget.getWidgetData<String>('message', defaultValue: 'Default Title')
+              expeditionController.text = value!,
+            });
+    await HomeWidget.getWidgetData<String>('title', defaultValue: 'Resi')
         .then((value) => {
-      bodyController.text = value!,
-    });
+              resiController.text = value!,
+            });
+    await HomeWidget.getWidgetData<String>('message',
+            defaultValue: 'Default Title')
+        .then((value) => {
+              bodyController.text = value!,
+            });
   }
 
   @override
@@ -70,11 +92,36 @@ class HomeController extends GetxController {
   }
 
   Future<void> cekResi() async {
-    final Resi? res = await resiProvider.getResi(resiController.text);
+    if (resiController.text.isEmpty || expeditionController.text.isEmpty) {
+      Get.snackbar("Some data are empty", "Please fill all the data");
+      return;
+    }
+
     GetStorage().write('resi', resiController.text);
-    if (res != null && res.data != null && res.data!.trackingList != null) {
-      List<TrackingList>? trackingList = res.data!.trackingList;
-      message.value = trackingList!.first.message!;
+    GetStorage().write('expedition', expeditionController.text);
+
+    final res = await resiProvider.getResi(
+        resiController.text, expeditionController.text);
+    if (expeditionController.text == 'spx') {
+      handleSpxResponse(res!);
+    } else if (expeditionController.text == 'jnt-cargo') {
+      handleJntCargoResponse(res!);
+    }
+  }
+
+  void handleSpxResponse(Response res) {
+    final trackingList = Resi.fromJson(res.body).data?.trackingList;
+    if (trackingList != null) {
+      message.value = trackingList.first.message!;
+      bodyController.text = message.value;
+      sendAndUpdate();
+    }
+  }
+
+  void handleJntCargoResponse(Response res) {
+    final trackingList = JntCargo.fromJson(res.body).data?[0].details;
+    if (trackingList != null) {
+      message.value = trackingList.first.customerTracking!;
       bodyController.text = message.value;
       sendAndUpdate();
     }
@@ -83,6 +130,7 @@ class HomeController extends GetxController {
   Future _sendData() async {
     try {
       return Future.wait([
+        HomeWidget.saveWidgetData<String>('expedition', expeditionController.text),
         HomeWidget.saveWidgetData<String>('title', resiController.text),
         HomeWidget.saveWidgetData<String>('message', bodyController.text),
         HomeWidget.renderFlutterWidget(
@@ -113,10 +161,13 @@ class HomeController extends GetxController {
   Future loadData() async {
     try {
       return Future.wait([
+        HomeWidget.getWidgetData<String>('expedition',
+                defaultValue: 'Default Title')
+            .then((value) => expeditionController.text = value ?? ''),
         HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
             .then((value) => resiController.text = value ?? ''),
         HomeWidget.getWidgetData<String>('message',
-            defaultValue: 'Default Message')
+                defaultValue: 'Default Message')
             .then((value) => bodyController.text = value ?? ''),
       ]);
     } on PlatformException catch (exception) {

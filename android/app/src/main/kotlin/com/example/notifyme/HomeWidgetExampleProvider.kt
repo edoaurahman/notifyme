@@ -22,6 +22,8 @@ class HomeWidgetExampleProvider : HomeWidgetProvider() {
                     MainActivity::class.java)
                 setOnClickPendingIntent(R.id.widget_container, pendingIntent)
 
+                setTextViewText(R.id.widget_expedition, widgetData.getString("expedition", null)
+                    ?: "No Expedition Set")
                 // Swap Title Text by calling Dart Code in the Background
                 setTextViewText(R.id.widget_title, widgetData.getString("title", null)
                     ?: "No Title Set")
