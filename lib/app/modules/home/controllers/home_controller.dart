@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:home_widget/home_widget.dart';
-import 'package:notifyme/app/modules/home/jnt_cargo.dart';
 import 'package:notifyme/app/modules/home/providers/resi_provider.dart';
 import 'package:workmanager/workmanager.dart';
 import '../resi_model.dart';
@@ -32,17 +31,10 @@ void callbackDispatcher() {
               expedition = value!,
             });
     String message = '[$time] ';
-    final Response? res = await resiProvider.getResi(resi, expedition);
-    if (expedition == 'spx') {
-      final trackingList = Resi.fromJson(res!.body).data?.trackingList;
-      if (trackingList != null) {
-        message += trackingList.first.message!;
-      }
-    } else if (expedition == 'jnt-cargo') {
-      final trackingList = JntCargo.fromJson(res!.body).data?[0].details;
-      if (trackingList != null) {
-        message += trackingList.first.customerTracking!;
-      }
+    final Resi? res = await resiProvider.getResi(resi, expedition);
+    final trackingList = getFirstMessage(res!);
+    if (trackingList!.isNotEmpty) {
+      message += trackingList;
     }
 
     await HomeWidget.saveWidgetData<String>('message', message);
@@ -52,6 +44,20 @@ void callbackDispatcher() {
     Get.delete<ResiProvider>();
     return Future.value(true);
   });
+}
+
+String? getFirstMessage(Resi res) {
+  final trackingList = res.details;
+  if (trackingList.isNotEmpty) {
+    return trackingList.first.message;
+  } else {
+    const GetSnackBar(
+      title: 'Error',
+      message: 'Failed to get data',
+      duration: Duration(seconds: 2),
+    );
+    return null;
+  }
 }
 
 class HomeController extends GetxController {
@@ -68,8 +74,7 @@ class HomeController extends GetxController {
     // For IOS
     HomeWidget.setAppGroupId('1');
     HomeWidget.registerInteractivityCallback(backgroundCallback);
-    await HomeWidget.getWidgetData<String>('expedition',
-            defaultValue: 'spx')
+    await HomeWidget.getWidgetData<String>('expedition', defaultValue: 'spx')
         .then((value) => {
               expeditionController.text = value!,
             });
@@ -100,37 +105,25 @@ class HomeController extends GetxController {
     GetStorage().write('resi', resiController.text);
     GetStorage().write('expedition', expeditionController.text);
 
-    final res = await resiProvider.getResi(
+    final Resi? res = await resiProvider.getResi(
         resiController.text, expeditionController.text);
-    if (expeditionController.text == 'spx') {
-      handleSpxResponse(res!);
-    } else if (expeditionController.text == 'jnt-cargo') {
-      handleJntCargoResponse(res!);
+    if (res != null) {
+      handleResiResponse(res);
     }
   }
 
-  void handleSpxResponse(Response res) {
-    final trackingList = Resi.fromJson(res.body).data?.trackingList;
-    if (trackingList != null) {
-      message.value = trackingList.first.message!;
-      bodyController.text = message.value;
-      sendAndUpdate();
-    }
-  }
-
-  void handleJntCargoResponse(Response res) {
-    final trackingList = JntCargo.fromJson(res.body).data?[0].details;
-    if (trackingList != null) {
-      message.value = trackingList.first.customerTracking!;
-      bodyController.text = message.value;
-      sendAndUpdate();
-    }
+  void handleResiResponse(Resi res) {
+    final trackingList = res.details.first.message;
+    message.value = trackingList;
+    bodyController.text = message.value;
+    sendAndUpdate();
   }
 
   Future _sendData() async {
     try {
       return Future.wait([
-        HomeWidget.saveWidgetData<String>('expedition', expeditionController.text),
+        HomeWidget.saveWidgetData<String>(
+            'expedition', expeditionController.text),
         HomeWidget.saveWidgetData<String>('title', resiController.text),
         HomeWidget.saveWidgetData<String>('message', bodyController.text),
         HomeWidget.renderFlutterWidget(

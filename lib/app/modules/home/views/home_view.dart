@@ -7,7 +7,13 @@ import 'package:notifyme/app/modules/home/providers/resi_provider.dart';
 import 'package:notifyme/app/modules/home/resi_model.dart';
 import '../controllers/home_controller.dart';
 
-const List<String> list = <String>['Select Expedition','spx', 'jnt-cargo'];
+const List<String> list = <String>[
+  'Select Expedition',
+  'spx',
+  'jnt-cargo',
+  'jnt',
+  'tokopedia',
+];
 
 /// Called when Doing Background Work initiated from Widget
 @pragma("vm:entry-point")
@@ -17,31 +23,34 @@ void backgroundCallback(Uri? data) async {
   final minute = now.minute.toString().padLeft(2, '0');
   final time = '$hour:$minute';
 
-  String resi = '';
+  late String resi;
   await HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
       .then((value) => {
             resi = value!,
           });
-  String expedition = '';
-  await HomeWidget.getWidgetData<String>('expedition', defaultValue: 'Default Title')
+  late String expedition;
+  await HomeWidget.getWidgetData<String>('expedition',
+          defaultValue: 'Default Title')
       .then((value) => {
             expedition = value!,
           });
   String message = '[$time] ';
-  // final resiProvider = Get.put(ResiProvider());
-  // final Resi? res = await resiProvider.getResi(resi, expedition);
-  // if (res != null && res.data != null && res.data!.trackingList != null) {
-  //   List<TrackingList>? trackingList = res.data!.trackingList;
-  //   message += trackingList!.first.message!;
-  // }
-  // await HomeWidget.saveWidgetData<String>('message', message);
-  // await HomeWidget.updateWidget(
-  //     name: 'HomeWidgetExampleProvider', iOSName: 'HomeWidgetExample');
-  // Get.delete<ResiProvider>();
+  final resiProvider = Get.put(ResiProvider());
+  final Resi? res = await resiProvider.getResi(resi, expedition);
+  if (res == null) {
+    return;
+  } else {
+    final trackingList = res.details.first.message;
+    message += trackingList;
+  }
+  await HomeWidget.saveWidgetData<String>('message', message);
+  await HomeWidget.updateWidget(
+      name: 'HomeWidgetExampleProvider', iOSName: 'HomeWidgetExample');
+  Get.delete<ResiProvider>();
 }
 
 class HomeView extends GetView<HomeController> {
-  HomeView({Key? key}) : super(key: key);
+  HomeView({super.key});
   @override
   final controller = Get.find<HomeController>();
 
@@ -110,6 +119,7 @@ class ExpeditionsDropdown extends StatefulWidget {
 class _ExpeditionsDropdownState extends State<ExpeditionsDropdown> {
   String dropdownValue = list.first;
   final homeController = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<String>(

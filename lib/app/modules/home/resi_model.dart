@@ -1,132 +1,53 @@
+// To parse this JSON data, do
+//
+//     final resi = resiFromJson(jsonString);
+
+import 'dart:convert';
+
+Resi resiFromJson(String str) => Resi.fromJson(json.decode(str));
+
+String resiToJson(Resi data) => json.encode(data.toJson());
+
 class Resi {
-  String? message;
-  Data? data;
-  int? retcode;
+  String resi;
+  String expedition;
+  List<Detail> details;
 
-  Resi({this.message, this.data, this.retcode});
+  Resi({
+    required this.resi,
+    required this.expedition,
+    required this.details,
+  });
 
-  Resi.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = json['data'] != null ? Data?.fromJson(json['data']) : null;
-    retcode = json['retcode'];
-  }
+  factory Resi.fromJson(Map<String, dynamic> json) => Resi(
+    resi: json["resi"],
+    expedition: json["expedition"],
+    details: List<Detail>.from(json["details"].map((x) => Detail.fromJson(x))),
+  );
 
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['message'] = message;
-    if (data['data'] != null) {
-      data['data'] = data['data']?.toJson();
-    }
-    data['retcode'] = retcode;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "resi": resi,
+    "expedition": expedition,
+    "details": List<dynamic>.from(details.map((x) => x.toJson())),
+  };
 }
 
-class Data {
-  String? deliveryType;
-  String? currentStatus;
-  String? recipientName;
-  String? phone;
-  int? needTranslate;
-  List<TrackingList>? trackingList;
-  String? slsTrackingNumber;
-  List<StatusList>? statusList;
+class Detail {
+  DateTime time;
+  String message;
 
-  Data(
-      {this.deliveryType,
-      this.currentStatus,
-      this.recipientName,
-      this.phone,
-      this.needTranslate,
-      this.trackingList,
-      this.slsTrackingNumber,
-      this.statusList});
+  Detail({
+    required this.time,
+    required this.message,
+  });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    deliveryType = json['delivery_type'];
-    currentStatus = json['current_status'];
-    recipientName = json['recipient_name'];
-    phone = json['phone'];
-    needTranslate = json['need_translate'];
-    if (json['tracking_list'] != null) {
-      trackingList = <TrackingList>[];
-      json['tracking_list'].forEach((v) {
-        trackingList?.add(TrackingList.fromJson(v));
-      });
-    }
-    slsTrackingNumber = json['sls_tracking_number'];
-    if (json['status_list'] != null) {
-      statusList = <StatusList>[];
-      json['status_list'].forEach((v) {
-        statusList?.add(StatusList.fromJson(v));
-      });
-    }
-  }
+  factory Detail.fromJson(Map<String, dynamic> json) => Detail(
+    time: DateTime.parse(json["time"]),
+    message: json["message"],
+  );
 
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['delivery_type'] = deliveryType;
-    data['current_status'] = currentStatus;
-    data['recipient_name'] = recipientName;
-    data['phone'] = phone;
-    data['need_translate'] = needTranslate;
-    if (trackingList != null) {
-      data['tracking_list'] = trackingList?.map((v) => v.toJson()).toList();
-    }
-    data['sls_tracking_number'] = slsTrackingNumber;
-    if (statusList != null) {
-      data['status_list'] = statusList?.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class TrackingList {
-  String? status;
-  int? timestamp;
-  String? message;
-
-  TrackingList({this.status, this.timestamp, this.message});
-
-  TrackingList.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    timestamp = json['timestamp'];
-    message = json['message'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['status'] = status;
-    data['timestamp'] = timestamp;
-    data['message'] = message;
-    return data;
-  }
-}
-
-class StatusList {
-  int? timestamp;
-  int? code;
-  String? stateLs;
-  String? icon;
-  String? text;
-
-  StatusList({this.timestamp, this.code, this.stateLs, this.icon, this.text});
-
-  StatusList.fromJson(Map<String, dynamic> json) {
-    timestamp = json['timestamp'];
-    code = json['code'];
-    stateLs = json['state_ls'];
-    icon = json['icon'];
-    text = json['text'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['timestamp'] = timestamp;
-    data['code'] = code;
-    data['state_ls'] = stateLs;
-    data['icon'] = icon;
-    data['text'] = text;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "time": time.toIso8601String(),
+    "message": message,
+  };
 }
