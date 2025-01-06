@@ -13,6 +13,8 @@ const List<String> list = <String>[
   'jnt-cargo',
   'jnt',
   'tokopedia',
+  'sicepat',
+  'jne'
 ];
 
 /// Called when Doing Background Work initiated from Widget
@@ -131,7 +133,7 @@ class _ExpeditionsDropdownState extends State<ExpeditionsDropdown> {
         });
       },
       dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(value: value, label: value);
+        return DropdownMenuEntry<String>(value: value, label: value.toUpperCase());
       }).toList(),
     );
   }
