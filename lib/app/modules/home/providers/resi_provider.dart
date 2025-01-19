@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
+import 'package:notifyme/config.dart';
 
 import '../resi_model.dart';
 
 class ResiProvider extends GetConnect {
   @override
   void onInit() {
-    httpClient.baseUrl = 'https://spx-golang.edodev.my.id/';
+    httpClient.baseUrl = Config.API_URL;
   }
 
   Future<Resi?> getResi(String resi,String expedition) async {

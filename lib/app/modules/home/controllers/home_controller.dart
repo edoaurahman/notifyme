@@ -173,22 +173,6 @@ class HomeController extends GetxController {
     await _updateWidget();
   }
 
-  void checkForWidgetLaunch() {
-    HomeWidget.initiallyLaunchedFromHomeWidget().then(_launchedFromWidget);
-  }
-
-  void _launchedFromWidget(Uri? uri) {
-    if (uri != null) {
-      showDialog(
-        context: Get.context!,
-        builder: (buildContext) => AlertDialog(
-          title: const Text('App started from HomeScreenWidget'),
-          content: Text('Here is the URI: $uri'),
-        ),
-      );
-    }
-  }
-
   void startBackgroundUpdate() {
     Workmanager().registerPeriodicTask(
       '1',

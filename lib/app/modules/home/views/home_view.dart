@@ -3,19 +3,12 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:notifyme/app/components/expedition_dropdown.dart';
 import 'package:notifyme/app/modules/home/providers/resi_provider.dart';
 import 'package:notifyme/app/modules/home/resi_model.dart';
+import 'package:notifyme/app/routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 
-const List<String> list = <String>[
-  'Select Expedition',
-  'spx',
-  'jnt-cargo',
-  'jnt',
-  'tokopedia',
-  'sicepat',
-  'jne'
-];
 
 /// Called when Doing Background Work initiated from Widget
 @pragma("vm:entry-point")
@@ -53,6 +46,7 @@ void backgroundCallback(Uri? data) async {
 
 class HomeView extends GetView<HomeController> {
   HomeView({super.key});
+
   @override
   final controller = Get.find<HomeController>();
 
@@ -67,7 +61,7 @@ class HomeView extends GetView<HomeController> {
         child: Center(
           child: Column(
             children: [
-              const ExpeditionsDropdown(),
+              ExpeditionsDropdown(expeditionSelected: controller.expeditionController),
               TextField(
                 decoration: const InputDecoration(
                   hintText: 'Resi',
@@ -87,11 +81,7 @@ class HomeView extends GetView<HomeController> {
               ),
               ElevatedButton(
                 onPressed: controller.loadData,
-                child: const Text('Load Data'),
-              ),
-              ElevatedButton(
-                onPressed: controller.checkForWidgetLaunch,
-                child: const Text('Check For Widget Launch'),
+                child: const Text('Load Data from Widget'),
               ),
               if (Platform.isAndroid)
                 ElevatedButton(
@@ -103,38 +93,16 @@ class HomeView extends GetView<HomeController> {
                   onPressed: controller.stopBackgroundUpdate,
                   child: const Text('Stop updating in background'),
                 ),
+              ElevatedButton(
+                onPressed: () {
+                  Get.toNamed(Routes.EXPEDITIONS);
+                },
+                child: const Text('List Expediton'),
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class ExpeditionsDropdown extends StatefulWidget {
-  const ExpeditionsDropdown({super.key});
-
-  @override
-  State<ExpeditionsDropdown> createState() => _ExpeditionsDropdownState();
-}
-
-class _ExpeditionsDropdownState extends State<ExpeditionsDropdown> {
-  String dropdownValue = list.first;
-  final homeController = Get.find<HomeController>();
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownMenu<String>(
-      initialSelection: list.first,
-      onSelected: (String? value) {
-        setState(() {
-          dropdownValue = value!;
-          homeController.expeditionController.text = value;
-        });
-      },
-      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(value: value, label: value.toUpperCase());
-      }).toList(),
     );
   }
 }
