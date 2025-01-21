@@ -25,32 +25,37 @@ class ExpeditionsView extends GetView<ExpeditionsController> {
           controller.fetchExpeditions();
         },
         child: Center(
-            child: Obx(
-          () => Column(
-            children: <Widget>[
-              if (controller.listExpeditions.value.data == null) ...[
-                const SizedBox(height: 20),
-                const CircularProgressIndicator(),
-                const SizedBox(height: 20),
-                const Text('Loading...'),
-              ] else ...[
-                for (var item in controller.listExpeditions.value.data!) ...[
-                  InkWell(
-                    onTap: () {
-                      controller.showUpdateExpeditionDialog(item.trackingNum!);
-                    },
-                    child: Card(
-                      child: ListTile(
-                        title: Text('${item.expedition!} - ${item.status!}'),
-                        subtitle: Text(item.details!),
+          child: Obx(
+            () => ListView(
+              children: <Widget>[
+                if (controller.listExpeditions.value.isEmpty) ...[
+                  const Column(
+                    children: [
+                      SizedBox(height: 20),
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      Text('Loading...'),
+                    ],
+                  )
+                ] else ...[
+                  for (var item in controller.listExpeditions.value) ...[
+                    InkWell(
+                      onTap: () {
+                        controller.showUpdateExpeditionDialog(item.trackingNum);
+                      },
+                      child: Card(
+                        child: ListTile(
+                          title: Text('${item.expedition} - ${item.status}'),
+                          subtitle: Text(item.details),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ]
-            ],
+                  ],
+                ]
+              ],
+            ),
           ),
-        )),
+        ),
       ),
     );
   }

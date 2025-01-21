@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:notifyme/app/components/expedition_dropdown.dart';
-import 'package:notifyme/app/model/expeditions.dart';
 import 'package:notifyme/app/model/type/expedition.dart';
 import 'package:notifyme/app/modules/expeditions/providers/expedition_provider.dart';
+import 'package:notifyme/app/modules/home/providers/grpc_service.dart';
+import 'package:notifyme/app/protos/generated/resi.pbgrpc.dart';
 
 class ExpeditionsController extends GetxController {
-  final Rx<Expeditions> listExpeditions = Expeditions().obs;
+  final Rx<List<Resi>> listExpeditions = Rx<List<Resi>>([]);
   final TextEditingController expeditionSelected = TextEditingController();
   final TextEditingController textResiController = TextEditingController();
   final TextEditingController textEmailController = TextEditingController();
   final TextEditingController textStatusController = TextEditingController();
+  final GRCPService grpcService = GRCPService();
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
     fetchExpeditions();
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    grpcService.close();
+    super.onClose();
   }
 
   void fetchExpeditions() async {
-    listExpeditions.value = Expeditions();
-    final expeditionProvider = Get.find<ExpeditionProvider>();
-    final response = await expeditionProvider.getExpeditions();
-    if (response.status.hasError) {
-      Get.snackbar('Error', response.statusText!);
-    } else {
-      listExpeditions.value = Expeditions.fromJson(response.body);
-    }
+    listExpeditions.value = [];
+    final resis = await grpcService.getAllResi();
+    listExpeditions.value = resis;
   }
 
   void showDialogAddExpedition() {
@@ -104,6 +107,16 @@ class ExpeditionsController extends GetxController {
           child: const Text('Cancel'),
         ),
         TextButton(
+          onPressed: () async {
+            grpcService.deleteResi(resi);
+            fetchExpeditions();
+            Future.delayed(const Duration(seconds: 1), () {
+              Get.back();
+            });
+          },
+          child: const Text('Delete'),
+        ),
+        TextButton(
           onPressed: () {
             if (textStatusController.text.isNotEmpty) {
               updateExpedition(resi, textStatusController.text);
@@ -118,8 +131,8 @@ class ExpeditionsController extends GetxController {
     );
   }
 
-  void updateExpedition(String resi,String status) async {
-    final expeditionProvider = Get.find<ExpeditionProvider>();
+  void updateExpedition(String resi, String status) async {
+    final expeditionProvider = Get.put(ExpeditionProvider());
     final response = await expeditionProvider.updateExpedition(resi, status);
     if (response.status.hasError) {
       Get.snackbar('Error', response.statusText!);

@@ -9,7 +9,7 @@ const List<String> list = <String>[
   'sicepat',
   'jne'
 ];
-const List<String> list_status = <String>['tracking', 'done'];
+const List<String> listStatus = <String>['Select Status','tracking', 'done'];
 
 class ExpeditionsDropdown extends StatefulWidget {
   final TextEditingController expeditionSelected;
@@ -52,19 +52,19 @@ class ExpeditionStatusDropdown extends StatefulWidget {
 }
 
 class _ExpeditionStatusDropdownState extends State<ExpeditionStatusDropdown> {
-  String dropdownValue = list_status.first;
+  String dropdownValue = listStatus.first;
 
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<String>(
-      initialSelection: list_status.first,
+      initialSelection: listStatus.first,
       onSelected: (String? value) {
         setState(() {
           dropdownValue = value!;
           widget.statusSelected.text = value;
         });
       },
-      dropdownMenuEntries: list_status.map<DropdownMenuEntry<String>>((String value) {
+      dropdownMenuEntries: listStatus.map<DropdownMenuEntry<String>>((String value) {
         return DropdownMenuEntry<String>(
             value: value, label: value.toUpperCase());
       }).toList(),

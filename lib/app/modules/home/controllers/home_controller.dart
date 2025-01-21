@@ -20,16 +20,18 @@ void callbackDispatcher() {
     final resiProvider = Get.put(ResiProvider());
     String resi = '';
     await HomeWidget.getWidgetData<String>('title',
-            defaultValue: 'Default Title')
-        .then((value) => {
-              resi = value!,
-            });
+        defaultValue: 'Default Title')
+        .then((value) =>
+    {
+      resi = value!,
+    });
     String expedition = '';
     await HomeWidget.getWidgetData<String>('expedition',
-            defaultValue: 'Expediton')
-        .then((value) => {
-              expedition = value!,
-            });
+        defaultValue: 'Expediton')
+        .then((value) =>
+    {
+      expedition = value!,
+    });
     String message = '[$time] ';
     final Resi? res = await resiProvider.getResi(resi, expedition);
     final trackingList = getFirstMessage(res!);
@@ -75,18 +77,21 @@ class HomeController extends GetxController {
     HomeWidget.setAppGroupId('1');
     HomeWidget.registerInteractivityCallback(backgroundCallback);
     await HomeWidget.getWidgetData<String>('expedition', defaultValue: 'spx')
-        .then((value) => {
-              expeditionController.text = value!,
-            });
+        .then((value) =>
+    {
+      expeditionController.text = value!,
+    });
     await HomeWidget.getWidgetData<String>('title', defaultValue: 'Resi')
-        .then((value) => {
-              resiController.text = value!,
-            });
+        .then((value) =>
+    {
+      resiController.text = value!,
+    });
     await HomeWidget.getWidgetData<String>('message',
-            defaultValue: 'Default Title')
-        .then((value) => {
-              bodyController.text = value!,
-            });
+        defaultValue: 'Default Title')
+        .then((value) =>
+    {
+      bodyController.text = value!,
+    });
   }
 
   @override
@@ -155,12 +160,12 @@ class HomeController extends GetxController {
     try {
       return Future.wait([
         HomeWidget.getWidgetData<String>('expedition',
-                defaultValue: 'Default Title')
+            defaultValue: 'Default Title')
             .then((value) => expeditionController.text = value ?? ''),
         HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
             .then((value) => resiController.text = value ?? ''),
         HomeWidget.getWidgetData<String>('message',
-                defaultValue: 'Default Message')
+            defaultValue: 'Default Message')
             .then((value) => bodyController.text = value ?? ''),
       ]);
     } on PlatformException catch (exception) {
