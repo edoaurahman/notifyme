@@ -21,6 +21,7 @@ class Resi extends $pb.GeneratedMessage {
     $core.String? status,
     $core.String? details,
     $core.String? email,
+    $core.String? packageName,
   }) {
     final $result = create();
     if (id != null) {
@@ -41,6 +42,9 @@ class Resi extends $pb.GeneratedMessage {
     if (email != null) {
       $result.email = email;
     }
+    if (packageName != null) {
+      $result.packageName = packageName;
+    }
     return $result;
   }
   Resi._() : super();
@@ -54,6 +58,7 @@ class Resi extends $pb.GeneratedMessage {
     ..aOS(4, _omitFieldNames ? '' : 'status')
     ..aOS(5, _omitFieldNames ? '' : 'details')
     ..aOS(6, _omitFieldNames ? '' : 'email')
+    ..aOS(7, _omitFieldNames ? '' : 'packageName')
     ..hasRequiredFields = false
   ;
 
@@ -131,6 +136,15 @@ class Resi extends $pb.GeneratedMessage {
   $core.bool hasEmail() => $_has(5);
   @$pb.TagNumber(6)
   void clearEmail() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get packageName => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set packageName($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasPackageName() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearPackageName() => clearField(7);
 }
 
 class CreateResiRequest extends $pb.GeneratedMessage {
@@ -138,6 +152,7 @@ class CreateResiRequest extends $pb.GeneratedMessage {
     $core.String? trackingNum,
     $core.String? expedition,
     $core.String? email,
+    $core.String? packageName,
   }) {
     final $result = create();
     if (trackingNum != null) {
@@ -149,6 +164,9 @@ class CreateResiRequest extends $pb.GeneratedMessage {
     if (email != null) {
       $result.email = email;
     }
+    if (packageName != null) {
+      $result.packageName = packageName;
+    }
     return $result;
   }
   CreateResiRequest._() : super();
@@ -159,6 +177,7 @@ class CreateResiRequest extends $pb.GeneratedMessage {
     ..aOS(1, _omitFieldNames ? '' : 'trackingNum')
     ..aOS(2, _omitFieldNames ? '' : 'expedition')
     ..aOS(3, _omitFieldNames ? '' : 'email')
+    ..aOS(4, _omitFieldNames ? '' : 'packageName')
     ..hasRequiredFields = false
   ;
 
@@ -209,6 +228,15 @@ class CreateResiRequest extends $pb.GeneratedMessage {
   $core.bool hasEmail() => $_has(2);
   @$pb.TagNumber(3)
   void clearEmail() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get packageName => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set packageName($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasPackageName() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPackageName() => clearField(4);
 }
 
 class GetResiRequest extends $pb.GeneratedMessage {
@@ -263,31 +291,15 @@ class GetResiRequest extends $pb.GeneratedMessage {
 
 class UpdateResiRequest extends $pb.GeneratedMessage {
   factory UpdateResiRequest({
-    $core.int? id,
     $core.String? trackingNum,
-    $core.String? expedition,
     $core.String? status,
-    $core.String? details,
-    $core.String? email,
   }) {
     final $result = create();
-    if (id != null) {
-      $result.id = id;
-    }
     if (trackingNum != null) {
       $result.trackingNum = trackingNum;
     }
-    if (expedition != null) {
-      $result.expedition = expedition;
-    }
     if (status != null) {
       $result.status = status;
-    }
-    if (details != null) {
-      $result.details = details;
-    }
-    if (email != null) {
-      $result.email = email;
     }
     return $result;
   }
@@ -296,12 +308,8 @@ class UpdateResiRequest extends $pb.GeneratedMessage {
   factory UpdateResiRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'UpdateResiRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'protos'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'id', $pb.PbFieldType.O3)
     ..aOS(2, _omitFieldNames ? '' : 'trackingNum')
-    ..aOS(3, _omitFieldNames ? '' : 'expedition')
     ..aOS(4, _omitFieldNames ? '' : 'status')
-    ..aOS(5, _omitFieldNames ? '' : 'details')
-    ..aOS(6, _omitFieldNames ? '' : 'email')
     ..hasRequiredFields = false
   ;
 
@@ -326,59 +334,23 @@ class UpdateResiRequest extends $pb.GeneratedMessage {
   static UpdateResiRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UpdateResiRequest>(create);
   static UpdateResiRequest? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.int get id => $_getIZ(0);
-  @$pb.TagNumber(1)
-  set id($core.int v) { $_setSignedInt32(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearId() => clearField(1);
-
   @$pb.TagNumber(2)
-  $core.String get trackingNum => $_getSZ(1);
+  $core.String get trackingNum => $_getSZ(0);
   @$pb.TagNumber(2)
-  set trackingNum($core.String v) { $_setString(1, v); }
+  set trackingNum($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(2)
-  $core.bool hasTrackingNum() => $_has(1);
+  $core.bool hasTrackingNum() => $_has(0);
   @$pb.TagNumber(2)
   void clearTrackingNum() => clearField(2);
 
-  @$pb.TagNumber(3)
-  $core.String get expedition => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set expedition($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasExpedition() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearExpedition() => clearField(3);
-
   @$pb.TagNumber(4)
-  $core.String get status => $_getSZ(3);
+  $core.String get status => $_getSZ(1);
   @$pb.TagNumber(4)
-  set status($core.String v) { $_setString(3, v); }
+  set status($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(4)
-  $core.bool hasStatus() => $_has(3);
+  $core.bool hasStatus() => $_has(1);
   @$pb.TagNumber(4)
   void clearStatus() => clearField(4);
-
-  @$pb.TagNumber(5)
-  $core.String get details => $_getSZ(4);
-  @$pb.TagNumber(5)
-  set details($core.String v) { $_setString(4, v); }
-  @$pb.TagNumber(5)
-  $core.bool hasDetails() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearDetails() => clearField(5);
-
-  @$pb.TagNumber(6)
-  $core.String get email => $_getSZ(5);
-  @$pb.TagNumber(6)
-  set email($core.String v) { $_setString(5, v); }
-  @$pb.TagNumber(6)
-  $core.bool hasEmail() => $_has(5);
-  @$pb.TagNumber(6)
-  void clearEmail() => clearField(6);
 }
 
 class DeleteResiRequest extends $pb.GeneratedMessage {
@@ -607,6 +579,56 @@ class Empty extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static Empty getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Empty>(create);
   static Empty? _defaultInstance;
+}
+
+class CheckAllResiResponse extends $pb.GeneratedMessage {
+  factory CheckAllResiResponse({
+    $core.bool? success,
+  }) {
+    final $result = create();
+    if (success != null) {
+      $result.success = success;
+    }
+    return $result;
+  }
+  CheckAllResiResponse._() : super();
+  factory CheckAllResiResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CheckAllResiResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CheckAllResiResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'protos'), createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CheckAllResiResponse clone() => CheckAllResiResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CheckAllResiResponse copyWith(void Function(CheckAllResiResponse) updates) => super.copyWith((message) => updates(message as CheckAllResiResponse)) as CheckAllResiResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CheckAllResiResponse create() => CheckAllResiResponse._();
+  CheckAllResiResponse createEmptyInstance() => create();
+  static $pb.PbList<CheckAllResiResponse> createRepeated() => $pb.PbList<CheckAllResiResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CheckAllResiResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CheckAllResiResponse>(create);
+  static CheckAllResiResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => clearField(1);
 }
 
 

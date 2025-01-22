@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:grpc/grpc.dart';
 import 'package:notifyme/app/protos/generated/resi.pbgrpc.dart';
@@ -30,7 +29,8 @@ class GRCPService {
   }
 
   Future<ClientChannel> _makeChannel() async {
-    final caCert = await rootBundle.loadString('assets/certificates/ca-cert.pem');
+    final caCert =
+        await rootBundle.loadString('assets/certificates/ca-cert.pem');
 
     return ClientChannel(
       Config.GRCP_URL_BASE,
@@ -51,24 +51,58 @@ class GRCPService {
     await _ensureInitialized();
     try {
       final response = await _client.getAllResi(Empty());
-      if (kDebugMode) {
-        print(response.resis);
-      }
       return response.resis;
     } catch (e) {
       rethrow;
     }
   }
 
-  void deleteResi(String resi) async {
+  Future<void> deleteResi(String resi) async {
     try {
       final request = DeleteResiRequest()..trackingNum = resi;
       final response = await _client.deleteResi(request);
       if (response.success) {
-        Get.snackbar("Success", "Data deleted");
+        Get.snackbar("Success", "Data deleted",
+            duration: const Duration(seconds: 1));
       } else {
-        Get.snackbar("Error", "Failed to delete data");
+        Get.snackbar("Error", "Failed to delete data",
+            duration: const Duration(seconds: 1));
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addResi(
+      String resi, String expedition, String email, String packageName) async {
+    try {
+      final request = CreateResiRequest()
+        ..trackingNum = resi
+        ..expedition = expedition
+        ..email = email
+        ..packageName = packageName;
+      await _client.createResi(request);
+      Get.snackbar("Success", "Data added");
+    } on GrpcError catch (e) {
+      Get.snackbar(
+          "Error", "Failed to add data: ${e.message} (code: ${e.code})");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateResi(String resi, String status) async {
+    try {
+      final request = UpdateResiRequest()
+        ..trackingNum = resi
+        ..status = status;
+      await _client.updateResi(request);
+      Get.snackbar("Success", "Data updated",
+          duration: const Duration(seconds: 1));
+    } on GrpcError catch (e) {
+      Get.snackbar(
+          "Error", "Failed to update data: ${e.message} (code: ${e.code})",
+          duration: const Duration(seconds: 1));
     } catch (e) {
       rethrow;
     }

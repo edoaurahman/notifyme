@@ -28,7 +28,8 @@ class ExpeditionsView extends GetView<ExpeditionsController> {
           child: Obx(
             () => ListView(
               children: <Widget>[
-                if (controller.listExpeditions.value.isEmpty) ...[
+                if (controller.listExpeditions.value.isEmpty &&
+                    controller.isLoading.value) ...[
                   const Column(
                     children: [
                       SizedBox(height: 20),
@@ -37,7 +38,7 @@ class ExpeditionsView extends GetView<ExpeditionsController> {
                       Text('Loading...'),
                     ],
                   )
-                ] else ...[
+                ] else if (controller.listExpeditions.value.isNotEmpty) ...[
                   for (var item in controller.listExpeditions.value) ...[
                     InkWell(
                       onTap: () {
@@ -45,13 +46,17 @@ class ExpeditionsView extends GetView<ExpeditionsController> {
                       },
                       child: Card(
                         child: ListTile(
-                          title: Text('${item.expedition} - ${item.status}'),
+                          title: Text('${item.packageName} - ${item.status}'),
                           subtitle: Text(item.details),
                         ),
                       ),
                     ),
                   ],
-                ]
+                ] else ...[
+                  const Center(
+                    child: Text('No Data'),
+                  )
+                ],
               ],
             ),
           ),

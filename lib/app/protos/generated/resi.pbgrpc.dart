@@ -41,6 +41,10 @@ class ResiServiceClient extends $grpc.Client {
       '/protos.ResiService/GetAllResi',
       ($0.Empty value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.ResiListResponse.fromBuffer(value));
+  static final _$checkAllResi = $grpc.ClientMethod<$0.Empty, $0.CheckAllResiResponse>(
+      '/protos.ResiService/CheckAllResi',
+      ($0.Empty value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.CheckAllResiResponse.fromBuffer(value));
 
   ResiServiceClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -66,6 +70,10 @@ class ResiServiceClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.ResiListResponse> getAllResi($0.Empty request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getAllResi, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.CheckAllResiResponse> checkAllResi($0.Empty request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$checkAllResi, request, options: options);
   }
 }
 
@@ -109,6 +117,13 @@ abstract class ResiServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
         ($0.ResiListResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Empty, $0.CheckAllResiResponse>(
+        'CheckAllResi',
+        checkAllResi_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.CheckAllResiResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.ResiResponse> createResi_Pre($grpc.ServiceCall call, $async.Future<$0.CreateResiRequest> request) async {
@@ -131,9 +146,14 @@ abstract class ResiServiceBase extends $grpc.Service {
     return getAllResi(call, await request);
   }
 
+  $async.Future<$0.CheckAllResiResponse> checkAllResi_Pre($grpc.ServiceCall call, $async.Future<$0.Empty> request) async {
+    return checkAllResi(call, await request);
+  }
+
   $async.Future<$0.ResiResponse> createResi($grpc.ServiceCall call, $0.CreateResiRequest request);
   $async.Future<$0.ResiResponse> getResi($grpc.ServiceCall call, $0.GetResiRequest request);
   $async.Future<$0.ResiResponse> updateResi($grpc.ServiceCall call, $0.UpdateResiRequest request);
   $async.Future<$0.DeleteResiResponse> deleteResi($grpc.ServiceCall call, $0.DeleteResiRequest request);
   $async.Future<$0.ResiListResponse> getAllResi($grpc.ServiceCall call, $0.Empty request);
+  $async.Future<$0.CheckAllResiResponse> checkAllResi($grpc.ServiceCall call, $0.Empty request);
 }

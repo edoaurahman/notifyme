@@ -23,6 +23,7 @@ const Resi$json = {
     {'1': 'status', '3': 4, '4': 1, '5': 9, '10': 'status'},
     {'1': 'details', '3': 5, '4': 1, '5': 9, '10': 'details'},
     {'1': 'email', '3': 6, '4': 1, '5': 9, '10': 'email'},
+    {'1': 'package_name', '3': 7, '4': 1, '5': 9, '10': 'packageName'},
   ],
 };
 
@@ -30,7 +31,8 @@ const Resi$json = {
 final $typed_data.Uint8List resiDescriptor = $convert.base64Decode(
     'CgRSZXNpEg4KAmlkGAEgASgFUgJpZBIhCgx0cmFja2luZ19udW0YAiABKAlSC3RyYWNraW5nTn'
     'VtEh4KCmV4cGVkaXRpb24YAyABKAlSCmV4cGVkaXRpb24SFgoGc3RhdHVzGAQgASgJUgZzdGF0'
-    'dXMSGAoHZGV0YWlscxgFIAEoCVIHZGV0YWlscxIUCgVlbWFpbBgGIAEoCVIFZW1haWw=');
+    'dXMSGAoHZGV0YWlscxgFIAEoCVIHZGV0YWlscxIUCgVlbWFpbBgGIAEoCVIFZW1haWwSIQoMcG'
+    'Fja2FnZV9uYW1lGAcgASgJUgtwYWNrYWdlTmFtZQ==');
 
 @$core.Deprecated('Use createResiRequestDescriptor instead')
 const CreateResiRequest$json = {
@@ -39,13 +41,15 @@ const CreateResiRequest$json = {
     {'1': 'tracking_num', '3': 1, '4': 1, '5': 9, '10': 'trackingNum'},
     {'1': 'expedition', '3': 2, '4': 1, '5': 9, '10': 'expedition'},
     {'1': 'email', '3': 3, '4': 1, '5': 9, '10': 'email'},
+    {'1': 'package_name', '3': 4, '4': 1, '5': 9, '10': 'packageName'},
   ],
 };
 
 /// Descriptor for `CreateResiRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List createResiRequestDescriptor = $convert.base64Decode(
     'ChFDcmVhdGVSZXNpUmVxdWVzdBIhCgx0cmFja2luZ19udW0YASABKAlSC3RyYWNraW5nTnVtEh'
-    '4KCmV4cGVkaXRpb24YAiABKAlSCmV4cGVkaXRpb24SFAoFZW1haWwYAyABKAlSBWVtYWls');
+    '4KCmV4cGVkaXRpb24YAiABKAlSCmV4cGVkaXRpb24SFAoFZW1haWwYAyABKAlSBWVtYWlsEiEK'
+    'DHBhY2thZ2VfbmFtZRgEIAEoCVILcGFja2FnZU5hbWU=');
 
 @$core.Deprecated('Use getResiRequestDescriptor instead')
 const GetResiRequest$json = {
@@ -63,21 +67,15 @@ final $typed_data.Uint8List getResiRequestDescriptor = $convert.base64Decode(
 const UpdateResiRequest$json = {
   '1': 'UpdateResiRequest',
   '2': [
-    {'1': 'id', '3': 1, '4': 1, '5': 5, '10': 'id'},
     {'1': 'tracking_num', '3': 2, '4': 1, '5': 9, '10': 'trackingNum'},
-    {'1': 'expedition', '3': 3, '4': 1, '5': 9, '10': 'expedition'},
     {'1': 'status', '3': 4, '4': 1, '5': 9, '10': 'status'},
-    {'1': 'details', '3': 5, '4': 1, '5': 9, '10': 'details'},
-    {'1': 'email', '3': 6, '4': 1, '5': 9, '10': 'email'},
   ],
 };
 
 /// Descriptor for `UpdateResiRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List updateResiRequestDescriptor = $convert.base64Decode(
-    'ChFVcGRhdGVSZXNpUmVxdWVzdBIOCgJpZBgBIAEoBVICaWQSIQoMdHJhY2tpbmdfbnVtGAIgAS'
-    'gJUgt0cmFja2luZ051bRIeCgpleHBlZGl0aW9uGAMgASgJUgpleHBlZGl0aW9uEhYKBnN0YXR1'
-    'cxgEIAEoCVIGc3RhdHVzEhgKB2RldGFpbHMYBSABKAlSB2RldGFpbHMSFAoFZW1haWwYBiABKA'
-    'lSBWVtYWls');
+    'ChFVcGRhdGVSZXNpUmVxdWVzdBIhCgx0cmFja2luZ19udW0YAiABKAlSC3RyYWNraW5nTnVtEh'
+    'YKBnN0YXR1cxgEIAEoCVIGc3RhdHVz');
 
 @$core.Deprecated('Use deleteResiRequestDescriptor instead')
 const DeleteResiRequest$json = {
@@ -135,4 +133,16 @@ const Empty$json = {
 /// Descriptor for `Empty`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List emptyDescriptor = $convert.base64Decode(
     'CgVFbXB0eQ==');
+
+@$core.Deprecated('Use checkAllResiResponseDescriptor instead')
+const CheckAllResiResponse$json = {
+  '1': 'CheckAllResiResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+  ],
+};
+
+/// Descriptor for `CheckAllResiResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List checkAllResiResponseDescriptor = $convert.base64Decode(
+    'ChRDaGVja0FsbFJlc2lSZXNwb25zZRIYCgdzdWNjZXNzGAEgASgIUgdzdWNjZXNz');
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 const List<String> list = <String>[
-  'Select Expedition',
   'spx',
   'jnt-cargo',
   'jnt',
@@ -9,7 +8,7 @@ const List<String> list = <String>[
   'sicepat',
   'jne'
 ];
-const List<String> listStatus = <String>['Select Status','tracking', 'done'];
+const List<String> listStatus = <String>['tracking', 'done'];
 
 class ExpeditionsDropdown extends StatefulWidget {
   final TextEditingController expeditionSelected;
@@ -25,18 +24,26 @@ class _ExpeditionsDropdownState extends State<ExpeditionsDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<String>(
-      initialSelection: list.first,
-      onSelected: (String? value) {
-        setState(() {
-          dropdownValue = value!;
-          widget.expeditionSelected.text = value;
-        });
-      },
-      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(
-            value: value, label: value.toUpperCase());
-      }).toList(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Select Expedition'),
+        DropdownMenu<String>(
+          width: double.infinity,
+          hintText: 'Select Expedition',
+          // initialSelection: list.first,
+          onSelected: (String? value) {
+            setState(() {
+              dropdownValue = value!;
+              widget.expeditionSelected.text = value;
+            });
+          },
+          dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
+            return DropdownMenuEntry<String>(
+                value: value, label: value.toUpperCase());
+          }).toList(),
+        ),
+      ],
     );
   }
 }
@@ -57,7 +64,8 @@ class _ExpeditionStatusDropdownState extends State<ExpeditionStatusDropdown> {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<String>(
-      initialSelection: listStatus.first,
+      width: double.infinity,
+      hintText: 'Select Status',
       onSelected: (String? value) {
         setState(() {
           dropdownValue = value!;

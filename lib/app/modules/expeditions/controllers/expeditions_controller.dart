@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:notifyme/app/components/expedition_dropdown.dart';
-import 'package:notifyme/app/model/type/expedition.dart';
-import 'package:notifyme/app/modules/expeditions/providers/expedition_provider.dart';
 import 'package:notifyme/app/modules/home/providers/grpc_service.dart';
 import 'package:notifyme/app/protos/generated/resi.pbgrpc.dart';
 
@@ -10,9 +8,12 @@ class ExpeditionsController extends GetxController {
   final Rx<List<Resi>> listExpeditions = Rx<List<Resi>>([]);
   final TextEditingController expeditionSelected = TextEditingController();
   final TextEditingController textResiController = TextEditingController();
+  final TextEditingController textPackageNameController =
+      TextEditingController();
   final TextEditingController textEmailController = TextEditingController();
   final TextEditingController textStatusController = TextEditingController();
   final GRCPService grpcService = GRCPService();
+  final isLoading = true.obs;
 
   @override
   void onReady() {
@@ -27,9 +28,11 @@ class ExpeditionsController extends GetxController {
   }
 
   void fetchExpeditions() async {
+    isLoading.value = true;
     listExpeditions.value = [];
     final resis = await grpcService.getAllResi();
     listExpeditions.value = resis;
+    isLoading.value = false;
   }
 
   void showDialogAddExpedition() {
@@ -39,10 +42,15 @@ class ExpeditionsController extends GetxController {
         children: <Widget>[
           ExpeditionsDropdown(expeditionSelected: expeditionSelected),
           TextField(
+            controller: textPackageNameController,
+            decoration: const InputDecoration(labelText: 'Nama Barang'),
+          ),
+          TextField(
             controller: textResiController,
             decoration: const InputDecoration(labelText: 'Resi'),
           ),
           TextField(
+            keyboardType: TextInputType.emailAddress,
             controller: textEmailController,
             decoration: const InputDecoration(labelText: 'Email'),
           ),
@@ -58,7 +66,9 @@ class ExpeditionsController extends GetxController {
         TextButton(
           onPressed: () {
             if (textResiController.text.isNotEmpty &&
-                textEmailController.text.isNotEmpty) {
+                textEmailController.text.isNotEmpty &&
+                textPackageNameController.text.isNotEmpty &&
+                expeditionSelected.text.isNotEmpty) {
               addExpedition();
               Get.back();
             } else {
@@ -72,22 +82,17 @@ class ExpeditionsController extends GetxController {
   }
 
   void addExpedition() async {
-    final expeditionProvider = Get.find<ExpeditionProvider>();
-    final requestData = Expedition(
-        slsTrackingNumber: textResiController.text,
-        type: expeditionSelected.text,
-        email: textEmailController.text);
-    final response = await expeditionProvider.addExpedition(requestData);
-
-    if (response.status.hasError) {
-      Get.snackbar('Error', response.statusText!);
-    } else {
-      Get.snackbar('Success', 'Expedition added');
-      fetchExpeditions();
-    }
+    await grpcService.addResi(
+      textResiController.text,
+      expeditionSelected.text,
+      textEmailController.text,
+      textPackageNameController.text,
+    );
     expeditionSelected.clear();
+    textPackageNameController.clear();
     textResiController.clear();
     textEmailController.clear();
+    fetchExpeditions();
   }
 
   void showUpdateExpeditionDialog(String resi) {
@@ -107,12 +112,9 @@ class ExpeditionsController extends GetxController {
           child: const Text('Cancel'),
         ),
         TextButton(
-          onPressed: () async {
-            grpcService.deleteResi(resi);
-            fetchExpeditions();
-            Future.delayed(const Duration(seconds: 1), () {
-              Get.back();
-            });
+          onPressed: () {
+            deleteExpedition(resi);
+            Get.back();
           },
           child: const Text('Delete'),
         ),
@@ -132,14 +134,13 @@ class ExpeditionsController extends GetxController {
   }
 
   void updateExpedition(String resi, String status) async {
-    final expeditionProvider = Get.put(ExpeditionProvider());
-    final response = await expeditionProvider.updateExpedition(resi, status);
-    if (response.status.hasError) {
-      Get.snackbar('Error', response.statusText!);
-    } else {
-      Get.snackbar('Success', 'Expedition updated');
-      fetchExpeditions();
-    }
-    textEmailController.clear();
+    await grpcService.updateResi(resi, status);
+    textStatusController.clear();
+    fetchExpeditions();
+  }
+
+  void deleteExpedition(String resi) async {
+    await grpcService.deleteResi(resi);
+    fetchExpeditions();
   }
 }
